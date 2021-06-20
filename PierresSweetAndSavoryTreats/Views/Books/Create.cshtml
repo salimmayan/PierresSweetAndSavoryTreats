@@ -1,0 +1,31 @@
+@{
+  Layout = "_Layout";
+}
+
+@model Library.Models.Book;
+
+<h1>Add a Book</h1>
+
+@using (Html.BeginForm())
+{
+  @Html.LabelFor(model => model.Title);
+  @Html.TextBoxFor(model => model.Title);
+  <br>
+  @Html.Label("First author:");
+  @Html.TextBox("authorName1");
+  <br>  
+  @Html.Label("Second author:");
+  @Html.TextBox("authorName2");
+  <br>
+  @Html.Label("Third author:");
+  @Html.TextBox("authorName3");
+  <br>
+  @Html.Label("Fourth author:");
+  @Html.TextBox("authorName4");
+  <br>
+  @Html.Label("Number of copies:")
+  @Html.TextBox("numberOfCopies");
+  <input type="submit" value="Submit" />
+}
+
+<p>@Html.ActionLink("See Books Past Due", "PastDueDate")</p>
