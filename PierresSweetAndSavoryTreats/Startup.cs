@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;  
-using Library.Models;
+using PierresSweetAndSavoryTreats.Models;
 
 namespace Library
 {
@@ -26,11 +26,11 @@ namespace Library
       services.AddMvc();
 
       services.AddEntityFrameworkMySql()
-        .AddDbContext<LibraryContext>(options => options
+        .AddDbContext<PierresSweetAndSavoryTreatsContext>(options => options
         .UseMySql(Configuration["ConnectionStrings:DefaultConnection"], ServerVersion.AutoDetect(Configuration["ConnectionStrings:DefaultConnection"])));
       
       services.AddIdentity<ApplicationUser, IdentityRole>()
-        .AddEntityFrameworkStores<LibraryContext>()
+        .AddEntityFrameworkStores<PierresSweetAndSavoryTreatsContext>()
         .AddDefaultTokenProviders();
 
       services.Configure<IdentityOptions>(options =>
