@@ -1,18 +1,18 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
-using Library.Models;
+using PierresSweetAndSavoryTreats.Models;
 using System.Threading.Tasks;
-using Library.ViewModels;
+using PierresSweetAndSavoryTreats.ViewModels;
 
-namespace Library.Controllers 
+namespace PierresSweetAndSavoryTreats.Controllers 
 {
   public class AccountController : Controller 
   {
-    private readonly LibraryContext _db;
+    private readonly PierresSweetAndSavoryTreatsContext _db;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
 
-    public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, LibraryContext db) 
+    public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, PierresSweetAndSavoryTreatsContext db) 
     {
       _userManager = userManager;
       _signInManager = signInManager;
@@ -36,10 +36,6 @@ namespace Library.Controllers
       IdentityResult result = await _userManager.CreateAsync(user, model.Password);
       if (result.Succeeded) 
       {
-        Patron patron = new Patron() { Name=model.Email };
-        _db.Patrons.Add(patron);
-        _db.SaveChanges();
-
         return RedirectToAction("Index");
       }
       else 

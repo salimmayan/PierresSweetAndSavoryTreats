@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using Library.Models;
+using PierresSweetAndSavoryTreats.Models;
 
-namespace Library.Controllers
+namespace PierresSweetAndSavoryTreats.Controllers
 {
   public class HomeController : Controller
   {

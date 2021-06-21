@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using Library.Models;
+using PierresSweetAndSavoryTreats.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System;
@@ -10,16 +10,16 @@ using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using System.Security.Claims;
 
-namespace Library.Controllers
+namespace PierresSweetAndSavoryTreats.Controllers
 {
   [Authorize]
-  public class CheckoutsController : Controller
+  public class TreatsController : Controller
   {
-    private readonly LibraryContext _db;
+    private readonly PierresSweetAndSavoryTreatsContext _db;
 
     private readonly UserManager<ApplicationUser> _userManager;
 
-    public CheckoutsController(UserManager<ApplicationUser> userManager, LibraryContext db)
+    public TreatsController(UserManager<ApplicationUser> userManager, PierresSweetAndSavoryTreatsContext db)
     {
       _userManager = userManager;
       _db = db;
