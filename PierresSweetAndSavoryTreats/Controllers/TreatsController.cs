@@ -12,57 +12,102 @@ using System.Security.Claims;
 
 namespace PierresSweetAndSavoryTreats.Controllers
 {
-  [Authorize]
-  public class TreatsController : Controller
-  {
-    private readonly PierresSweetAndSavoryTreatsContext _db;
-
-    private readonly UserManager<ApplicationUser> _userManager;
-
-    public TreatsController(UserManager<ApplicationUser> userManager, PierresSweetAndSavoryTreatsContext db)
+    [Authorize]
+    public class TreatsController : Controller
     {
-      _userManager = userManager;
-      _db = db;
-    }
+        private readonly PierresSweetAndSavoryTreatsContext _db;
 
-    public async Task<ActionResult> Index()
-    {
-      var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-      var currentUser = await _userManager.FindByIdAsync(userId);
-      var userCheckouts = _db.Checkouts.Where(entry => entry.Patron.Name == currentUser.UserName).ToList();
-      return View(userCheckouts);
-    }
+        private readonly UserManager<ApplicationUser> _userManager;
 
-    [HttpPost]
-    public async Task<ActionResult> Create(int bookId)
-    {
-      var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-      var currentUser = await _userManager.FindByIdAsync(userId);
-
-      Book book = _db.Books.FirstOrDefault(book => book.BookId == bookId);
-
-      Copy copyToCheckout = null;
-      foreach (Copy copy in book.Copies)
-      { 
-        if (copy.IsCheckedOut == false )
+        public TreatsController(UserManager<ApplicationUser> userManager, PierresSweetAndSavoryTreatsContext db)
         {
-          copyToCheckout = copy;
-          break;
+            _userManager = userManager;
+            _db = db;
         }
-      }
-      copyToCheckout.IsCheckedOut = true;
-      _db.Entry(copyToCheckout).State = EntityState.Modified;
-      _db.SaveChanges();
 
-      Patron patron = _db.Patrons.FirstOrDefault(patron => patron.Name == currentUser.UserName);
-      Checkout newCheckout = new Checkout() { PatronId=patron.PatronId, CopyId=copyToCheckout.CopyId};
-      int numberOfDaysDue = 14;
-      newCheckout.DueDate = DateTime.Today.AddDays(numberOfDaysDue);
+        public ActionResult Index()
+        {
+            IEnumerable<Treat> sortedTreats = _db.Treats.ToList().OrderBy(treat => treat.TreatName);
+            return View(sortedTreats.ToList());
+        }
 
-      _db.Checkouts.Add(newCheckout);
-      _db.SaveChanges();
+        [Authorize]
+        public ActionResult Create()
+        {
+            ViewBag.FlavorId = new SelectList(_db.Treats, "FlavorId", "EngineerName");
+            return View();
+        }
 
-      return RedirectToAction("Details", "Books", new { id=book.BookId } );
-    } 
-  }
+        [HttpPost]
+        [Authorize]
+        public ActionResult Create(Treat treat, int FlavorId)  //why int for string from drop
+        {
+            _db.Treats.Add(treat); //add new student btut no need to update course table - course already exists
+            _db.SaveChanges();
+            if (FlavorId != 0) //why?
+            {
+                _db.FlavorTreats.Add(new FlavorTreat() { FlavorId = FlavorId, TreatId = treat.TreatId });
+            }
+            _db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+        [Authorize]
+        public ActionResult Details(int id)
+        {
+            Treat thisTreat = _db.Treats
+              .Include(treat => treat.FlavorTreats)
+              .ThenInclude(join => join.Treat)
+              .FirstOrDefault(treat => treat.TreatId == id);
+            return View(thisTreat);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult DeleteEngineer(int joinId)
+        {
+            var joinEntry = _db.FlavorTreats.FirstOrDefault(entry => entry.FlavorTreatId == joinId);
+            _db.FlavorTreats.Remove(joinEntry);
+            _db.SaveChanges();
+            return RedirectToAction("Details", new { id = joinEntry.TreatId });
+        }
+
+        [Authorize]
+        public ActionResult Edit(int id)
+        {
+            var thisItem = _db.Treats.FirstOrDefault(treat => treat.TreatId == id);
+            // ViewBag.TreatId = new SelectList(_db.Treats, "TreatId", "TreatName");
+            ViewBag.TreatId = new SelectList(_db.Treats, "TreatId", "TreatName");
+            return View(thisItem);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult Edit(Treat treat, int TreatId)
+        {
+            if (TreatId != 0)
+            {
+                _db.FlavorTreats.Add(new FlavorTreat() { TreatId = TreatId, FlavorId = treat.TreatId });
+            }
+            _db.Entry(treat).State = EntityState.Modified;
+            _db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        [Authorize]
+        public ActionResult Delete(int id)
+        {
+            var thisTreat = _db.Treats.FirstOrDefault(treat => treat.TreatId == id);
+            return View(thisTreat);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [Authorize]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            var thisTreat = _db.Treats.FirstOrDefault(treat => treat.TreatId == id);
+            _db.Treats.Remove(thisTreat);
+            _db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+    }
 }

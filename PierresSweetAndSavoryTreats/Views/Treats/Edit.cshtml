@@ -1,0 +1,30 @@
+@{
+
+  Layout = "_Layout";
+}
+
+@model PierresSweetAndSavoryTreats.Models.Treat
+
+<h2>Edit</h2>
+
+<h4>Edit Treat: <span class="olive">@Html.DisplayFor(model => model.TreatName)</span></h4>
+<br>
+<div class="divClass">
+  @using (Html.BeginForm())
+
+  {
+    @Html.HiddenFor(model => model.TreatId)
+    <br>
+    <p><span class="left olive2">@Html.Label("Treat Name")</span> <span class="right olive2">
+        @Html.EditorFor(model => model.TreatName)</span></p>
+    <br>
+
+    <p><span class="left olive2">@Html.Label("Treat Price")</span> <span class="right olive2">
+        @Html.EditorFor(model => model.TreatPrice)</span></p>
+    <br><br><br>
+    <input type="submit" class="btn btn-default" value="Save Edits" />
+}
+
+  <br><br><br>
+  <p>@Html.ActionLink("Back to list of Treats", "Index")</p>
+</div>

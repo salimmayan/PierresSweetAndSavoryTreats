@@ -1,0 +1,32 @@
+@{
+
+  Layout = "_Layout";
+}
+
+@model PierresSweetAndSavoryTreats.Models.Treat
+
+<h1>Add a new Treat</h1>
+
+<div class="divClass">
+  @using (Html.BeginForm())
+
+  {
+    <p><span class="left olive2">@Html.Label("TreatName")</span> <span class="right olive2">@Html.TextBoxFor(model =>
+      model.TreatName, new { required = "required"})</span></p>
+    <br> <br>
+
+    <p><span class="left olive2"> @Html.Label("TreatPrice")</span> <span class="right olive2">@Html.TextBoxFor(model =>
+      model.TreatPrice, new { @type = "int", required = "required"})</span></p>
+    <br> <br>
+
+    <p><span class="left olive2"> @Html.Label("Select Flavors")</span> <span class="right olive2">
+    @Html.DropDownList("FlavorId", null, string.Empty)</span></p>
+    <br> <br>
+
+    <input type="submit" value="Add New Treat" class="btn btn-default" required="true" />
+
+  }
+
+      <br> <br>
+  <p>@Html.ActionLink("Show all treats", "Index")</p>
+  <p>@Html.ActionLink("Home", "Index", "Home")</p>

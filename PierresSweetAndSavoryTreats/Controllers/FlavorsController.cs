@@ -10,84 +10,104 @@ using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using System.Security.Claims;
 
-namespace PierresSweetAndSavoryTreats.Controllers {
-  [Authorize]
-  public class FlavorsController : Controller {
-    private readonly PierresSweetAndSavoryTreatsContext _db;
-
-    public FlavorsController(PierresSweetAndSavoryTreatsContext db) {
-      _db = db;
-    }
-
-    public ActionResult Index() {
-     List<Flavor> flavors = _db.Flavors.ToList();
-        // .Include(flavor => flavor.FlavorTreat)
-        // .ThenInclude(flavorTreat => authorflavorTreatBook.Flavor)
-        // .OrderBy(flavor => flavor.Title)
-        // .ToList();
-      return View(flavors);
-    }
-
+namespace PierresSweetAndSavoryFlavors.Controllers
+{
     [Authorize]
-    public ActionResult Create() {
-      return View();
-    }
-
-    [HttpPost]
-    [Authorize]
-    public ActionResult Create(Flavor flavor) {
-      _db.Flavors.Add(flavor);
-      _db.SaveChanges();
-      return RedirectToAction("Index");
-    }
-
-    public ActionResult Details(int flavorId) { //understand more
-      Flavor currentflavor = _db.Flavors
-      .Include(flavor => flavor.FlavorTreats)
-      .ThenInclude(flavorTreat => flavorTreat.Treat)
-      .FirstOrDefault(flavor => flavor.FlavorId == flavorId);
-      return View(currentflavor);
-    }
-
-    // public ActionResult Search() {
-    //   return View();
-    // }
-
-    [Authorize]
-    public ActionResult Edit(int flavorId)
+    public class FlavorsController : Controller
     {
-      Flavor currentflavor = _db.Flavors.FirstOrDefault(flavor => flavor.FlavorId == flavorId);
-      return View(currentflavor);
-    }
+        private readonly PierresSweetAndSavoryTreatsContext _db;
 
-    [HttpPost]
-    [Authorize]
-    public ActionResult Edit(Flavor flavor)
-    {
-      _db.Entry(flavor).State = EntityState.Modified;
-      _db.SaveChanges();
-      return RedirectToAction("Index");
-    }
+        private readonly UserManager<ApplicationUser> _userManager;
 
+        public FlavorsController(UserManager<ApplicationUser> userManager, PierresSweetAndSavoryTreatsContext db)
+        {
+            _userManager = userManager;
+            _db = db;
+        }
 
-    [Authorize]
-    public ActionResult Delete(int flavorId)
-    {
-      Flavor currentFlavor = _db.Flavors.FirstOrDefault(flavor => flavor.FlavorId == flavorId);
-      return View(currentFlavor);
-    }
+        public ActionResult Index()
+        {
+            IEnumerable<Flavor> sortedFlavors = _db.Flavors.ToList().OrderBy(flavor => flavor.FlavorName);
+            return View(sortedFlavors.ToList());
+        }
 
-    [HttpPost, ActionName("Delete")]
-    [Authorize]
-    public ActionResult DeleteConfirmed(int flavorId)
-    {
-      Flavor currentFlavor = _db.Flavors.FirstOrDefault(flavor => flavor.FlavorId == currentFlavor);
-      if (flavorId != 0)
-      {
-        _db.Flavors.Remove(currentFlavor);
-      }
-      _db.SaveChanges();
-      return RedirectToAction("Index");
+        [Authorize]
+        public ActionResult Create()
+        {
+            ViewBag.TreatId = new SelectList(_db.Treats, "TreatId", "TreatName");
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult Create(Flavor flavor, int TreatId)  //why int for string from drop
+        {
+            _db.Flavors.Add(flavor); //add new student btut no need to update course table - course already exists
+            _db.SaveChanges();
+            if (TreatId != 0) //why?
+            {
+                _db.FlavorTreats.Add(new FlavorTreat() { TreatId = TreatId, FlavorId = flavor.FlavorId });
+            }
+            _db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+        [Authorize]
+        public ActionResult Details(int id)
+        {
+            Flavor thisFlavor = _db.Flavors
+              .Include(flavor => flavor.FlavorTreats)
+              .ThenInclude(join => join.Flavor)
+              .FirstOrDefault(flavor => flavor.FlavorId == id);
+            return View(thisFlavor);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult DeleteEngineer(int joinId)
+        {
+            var joinEntry = _db.FlavorTreats.FirstOrDefault(entry => entry.FlavorTreatId == joinId);
+            _db.FlavorTreats.Remove(joinEntry);
+            _db.SaveChanges();
+            return RedirectToAction("Details", new { id = joinEntry.FlavorId });
+        }
+
+        [Authorize]
+        public ActionResult Edit(int id)
+        {
+            var thisItem = _db.Flavors.FirstOrDefault(flavor => flavor.FlavorId == id);
+            // ViewBag.FlavorId = new SelectList(_db.Flavors, "FlavorId", "FlavorName");
+            ViewBag.FlavorId = new SelectList(_db.Flavors, "FlavorId", "FlavorName");
+            return View(thisItem);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult Edit(Flavor flavor, int FlavorId)
+        {
+            if (FlavorId != 0)
+            {
+                _db.FlavorTreats.Add(new FlavorTreat() { FlavorId = FlavorId, TreatId = flavor.FlavorId });
+            }
+            _db.Entry(flavor).State = EntityState.Modified;
+            _db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        [Authorize]
+        public ActionResult Delete(int id)
+        {
+            var thisFlavor = _db.Flavors.FirstOrDefault(flavor => flavor.FlavorId == id);
+            return View(thisFlavor);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [Authorize]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            var thisFlavor = _db.Flavors.FirstOrDefault(flavor => flavor.FlavorId == id);
+            _db.Flavors.Remove(thisFlavor);
+            _db.SaveChanges();
+            return RedirectToAction("Index");
+        }
     }
-   }
 }

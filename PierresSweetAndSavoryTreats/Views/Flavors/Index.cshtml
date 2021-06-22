@@ -1,0 +1,30 @@
+@{
+  Layout = "_Layout";
+}
+
+@using PierresSweetAndSavoryTreats.Models;
+
+<h1>Flavors</h1>
+
+@if (@Model.Count == 0)
+{
+  <h4>No Flavors have been added yet!</h4>
+}
+
+@if (@Model.Count != 0)
+{
+  <div class="divClass">
+    <p><span class="left olive2">Flavor Name</span>
+    <br>
+    @foreach (Flavor flavor in Model)
+    {
+      <span class="left">@Html.ActionLink($"{flavor.FlavorName}", "Details", new { id = flavor.FlavorId })</span>
+      <br>
+    }
+  </div>
+}
+<br>
+<br>
+
+<p>@Html.ActionLink("Add new Flavor", "Create")</p>
+<p>@Html.ActionLink("Home", "Index", "Home")</p>

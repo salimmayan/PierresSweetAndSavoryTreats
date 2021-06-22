@@ -1,0 +1,47 @@
+@{
+
+  Layout = "_Layout";
+}
+
+@model PierresSweetAndSavoryTreats.Models.Treat
+
+<h2>Treat Details</h2>
+<div class="divClass">
+  <span class="left">
+    Treat Name:
+  </span> <span class="right">@Model.TreatName</span>
+  <br>
+  <span class="left">
+    Treat Year:
+  </span> <span class="right">@Model.TreatPrice</span>
+  <br><br><br>
+
+
+  @if (@Model.FlavorTreats.Count == 0)
+  {
+    <p>This Treat does not have any falvors</p>
+  }
+  else
+  {
+    <h5>Flavors belonging to Machine <span class="olive">@Model.TreatName</span> are:</h5>
+    <br>
+    <ul class="no-bullets">
+      @foreach (var join in Model.FlavorTreats)
+      {
+        <h5><span class="olive">@join.Flavor.FlavorName</span></h5>
+        @using (Html.BeginForm("DeleteFlavor", "Treats"))
+        {
+          @Html.Hidden("joinId", @join.FlavorTreatId)
+          <input type="submit" class = "btn btn-default"  value="Remove Treat from Flavor" />
+        }
+        <br>
+      }
+    </ul>
+  }
+</div>
+<br><br>
+<p>@Html.ActionLink("Back to Treats", "Index")</p>
+<p>@Html.ActionLink("Edit Treat", "Edit", new { id = Model.TreatId })</p>
+@* <p>@Html.ActionLink("Add Flavor to Treat", "AddTreat", new { id = Model.TreatId })</p> *@
+<p>@Html.ActionLink("Delete Treat", "Delete", new { id = Model.TreatId })</p>
+<p>@Html.ActionLink("Home", "Index", "Home")</p>

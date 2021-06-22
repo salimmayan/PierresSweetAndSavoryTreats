@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;  
 using PierresSweetAndSavoryTreats.Models;
 
-namespace Library
+namespace PierresSweetAndSavoryTreats
 {
   public class Startup
   {

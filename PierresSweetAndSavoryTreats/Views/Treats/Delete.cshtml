@@ -1,0 +1,17 @@
+@{
+  Layout = "_Layout";
+}
+
+@model PierresSweetAndSavoryTreats.Models.Treat
+
+<h2>DELETE Confirmation Page</h2>
+
+<h4>Are you sure about deleting Treat: <span class="olive">@Html.Label(@Model.TreatName)</span></h4>
+<br><br>
+<div class="divClass">
+  @using (Html.BeginForm())
+  {
+    <input type="submit" class="btn btn-default" value="Delete?" />
+  }
+  <br><br><br>
+  @Html.ActionLink("Back to List of Treats", "Index")
