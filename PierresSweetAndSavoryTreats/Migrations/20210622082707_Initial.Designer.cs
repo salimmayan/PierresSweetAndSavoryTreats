@@ -9,7 +9,7 @@ using PierresSweetAndSavoryTreats.Models;
 namespace PierresSweetAndSavoryTreats.Migrations
 {
     [DbContext(typeof(PierresSweetAndSavoryTreatsContext))]
-    [Migration("20210622055741_Initial")]
+    [Migration("20210622082707_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -48,7 +48,7 @@ else
 
   @foreach (Flavor flavor in ViewBag.FlavorList)
   {
-    <span class="left">@Html.ActionLink(flavor.FlavorName, "Details", "Treats", new { id = flavor.FlavorId })</span>
+    <span class="left">@Html.ActionLink(flavor.FlavorName, "Details", "Flavors", new { id = flavor.FlavorId })</span>
     <br>
   }
   <br><br><br>
