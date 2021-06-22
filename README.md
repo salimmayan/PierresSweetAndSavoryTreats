@@ -13,10 +13,10 @@
 
 ### Implemented User Stories
 
--   Application has user authentication (register/Log-in) and also includes ability to log in and log out. 
+-   Application has user authentication (Register/Log-in/Log-Out). 
 -   Only logged in users have create, update and delete functionality while all users have read functionality
--   User can  navigate to a splash page that lists all treats and flavors. User can click on an individual treat or flavor to see all the treats/flavors that belong to it.
--   There exist a many-to-many relationship between  `Treat`s and  `Flavor`s. -   
+-   User can  navigate to a splash page that lists all treats and flavors. 
+-   There exist a many-to-many relationship between  `Treat`s and  `Flavor`s.   
 
 ## Setup/Installation Requirements
 
@@ -42,8 +42,6 @@
 		"DefaultConnection": "Server=localhost;Port=3306;database=salim_mayan;uid=root;pwd=[PASSWORD];"
 	}
 }```
-
-```
 
 6. **Re-create Database with MySQL Workbench Migration Functionality**:  From command line navigate to `PierresSweetAndSavoryTreats`  directory and execute below command  
 	-   		dotnet ef database update
