@@ -34,7 +34,7 @@ namespace PierresSweetAndSavoryTreats.Controllers
         [Authorize]
         public ActionResult Create()
         {
-            ViewBag.FlavorId = new SelectList(_db.Treats, "FlavorId", "EngineerName");
+            ViewBag.FlavorId = new SelectList(_db.Flavors, "FlavorId", "FlavorName");
             return View();
         }
 
@@ -63,7 +63,7 @@ namespace PierresSweetAndSavoryTreats.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult DeleteEngineer(int joinId)
+        public ActionResult DeleteFlavor(int joinId)
         {
             var joinEntry = _db.FlavorTreats.FirstOrDefault(entry => entry.FlavorTreatId == joinId);
             _db.FlavorTreats.Remove(joinEntry);
@@ -74,19 +74,19 @@ namespace PierresSweetAndSavoryTreats.Controllers
         [Authorize]
         public ActionResult Edit(int id)
         {
-            var thisItem = _db.Treats.FirstOrDefault(treat => treat.TreatId == id);
+            var thisTreat = _db.Treats.FirstOrDefault(treat => treat.TreatId == id);
             // ViewBag.TreatId = new SelectList(_db.Treats, "TreatId", "TreatName");
-            ViewBag.TreatId = new SelectList(_db.Treats, "TreatId", "TreatName");
-            return View(thisItem);
+            ViewBag.FlavorId = new SelectList(_db.Flavors, "FlavorId", "FlavorName");
+            return View(thisTreat);
         }
 
         [HttpPost]
         [Authorize]
-        public ActionResult Edit(Treat treat, int TreatId)
+        public ActionResult Edit(Treat treat, int FlavorId)
         {
-            if (TreatId != 0)
+            if (FlavorId != 0)
             {
-                _db.FlavorTreats.Add(new FlavorTreat() { TreatId = TreatId, FlavorId = treat.TreatId });
+                _db.FlavorTreats.Add(new FlavorTreat() { FlavorId = FlavorId, TreatId = treat.TreatId });
             }
             _db.Entry(treat).State = EntityState.Modified;
             _db.SaveChanges();
